@@ -1,0 +1,106 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - ask_symptoms
+  - ask_fever
+  - ask_cough
+  - ask_headache
+  - ask_prevention
+  - ask_vaccination
+  - ask_emergency
+  - ask_medicine
+  - ask_doctor
+  - ask_hospital
+  - ask_covid
+  - ask_dengue
+  - ask_malaria
+  - ask_diabetes
+  - ask_hypertension
+  - out_of_scope
+
+entities:
+  - symptom
+  - disease
+  - medicine
+  - location
+  - age
+  - gender
+
+slots:
+  symptom:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: symptom
+  
+  disease:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: disease
+      
+  user_location:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: location
+
+responses:
+  utter_greet:
+  - text: "नमस्ते! मैं आपका स्वास्थ्य सहायक हूं। मैं आपकी स्वास्थ्य संबंधी समस्याओं में मदद कर सकता हूं।"
+  - text: "Hello! I'm your health assistant. How can I help you with your health concerns today?"
+
+  utter_goodbye:
+  - text: "अलविदा! स्वस्थ रहें और जरूरत पड़ने पर वापस आएं।"
+  - text: "Goodbye! Stay healthy and come back if you need any help."
+
+  utter_fever_advice:
+  - text: "बुखार के लिए: आराम करें, तरल पदार्थ पिएं, पैरासिटामोल ले सकते हैं। 102°F से ज्यादा हो तो तुरंत डॉक्टर से मिलें।"
+  - text: "For fever: Rest, drink fluids, take paracetamol if needed. See a doctor immediately if temperature exceeds 102°F."
+
+  utter_cough_advice:
+  - text: "खांसी के लिए: गर्म पानी पिएं, भाप लें, शहद का सेवन करें। 2 सप्ताह से ज्यादा हो तो जांच कराएं।"
+  - text: "For cough: Drink warm water, take steam, consume honey. Get checked if it persists for more than 2 weeks."
+
+  utter_covid_info:
+  - text: "कोविड लक्षण: बुखार, खांसी, सांस लेने में कठिनाई। मास्क पहनें, दूरी बनाएं, टीका लगवाएं।"
+  - text: "COVID symptoms: fever, cough, difficulty breathing. Wear mask, maintain distance, get vaccinated."
+
+  utter_dengue_prevention:
+  - text: "डेंगू से बचाव: पानी जमा न होने दें, मच्छरदानी का उपयोग करें, पूरी बाजू के कपड़े पहनें।"
+  - text: "Dengue prevention: Don't let water stagnate, use mosquito nets, wear full-sleeve clothes."
+
+  utter_vaccination_info:
+  - text: "टीकाकरण जरूरी है। कोविड, फ्लू, हेपेटाइटिस के टीके लगवाएं। नजदीकी स्वास्थ्य केंद्र से संपर्क करें।"
+  - text: "Vaccination is important. Get COVID, flu, hepatitis vaccines. Contact your nearest health center."
+
+  utter_emergency:
+  - text: "आपातकाल में तुरंत 108 डायल करें या नजदीकी अस्पताल जाएं। सांस लेने में कठिनाई, तेज बुखार, बेहोशी में देर न करें।"
+  - text: "In emergency, immediately dial 108 or go to nearest hospital. Don't delay for breathing difficulty, high fever, unconsciousness."
+
+  utter_default:
+  - text: "मुझे समझने में कठिनाई हो रही है। कृपया अपना सवाल दूसरे शब्दों में पूछें।"
+  - text: "I'm having trouble understanding. Please rephrase your question."
+
+  utter_iamabot:
+  - text: "मैं एक AI स्वास्थ्य सहायक हूं। मैं बुनियादी स्वास्थ्य जानकारी दे सकता हूं, लेकिन डॉक्टर की सलाह का विकल्प नहीं हूं।"
+
+actions:
+  - action_get_weather_alerts
+  - action_find_nearby_hospital
+  - action_vaccination_reminder
+  - action_symptom_checker
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

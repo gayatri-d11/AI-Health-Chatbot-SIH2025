@@ -1,0 +1,62 @@
+version: "3.1"
+
+nlu:
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - नमस्ते
+    - हैलो
+    - सुप्रभात
+
+- intent: ask_fever
+  examples: |
+    - I have fever
+    - fever symptoms
+    - what to do for fever
+    - मुझे बुखार है
+    - बुखार के लक्षण
+    - बुखार में क्या करें
+
+- intent: ask_cough
+  examples: |
+    - I have cough
+    - cough treatment
+    - मुझे खांसी है
+    - खांसी का इलाज
+
+- intent: ask_covid
+  examples: |
+    - covid symptoms
+    - coronavirus
+    - कोविड के लक्षण
+    - कोरोना वायरस
+
+- intent: ask_dengue
+  examples: |
+    - dengue symptoms
+    - dengue prevention
+    - डेंगू के लक्षण
+    - डेंगू से बचाव
+
+- intent: ask_vaccination
+  examples: |
+    - vaccination schedule
+    - vaccine information
+    - टीकाकरण
+    - टीका कब लगवाएं
+
+- intent: ask_emergency
+  examples: |
+    - emergency
+    - urgent help
+    - आपातकाल
+    - तुरंत मदद
+
+- intent: goodbye
+  examples: |
+    - bye
+    - goodbye
+    - अलविदा
+    - धन्यवाद
