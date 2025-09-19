@@ -2,10 +2,12 @@ const mongoose = require('mongoose');
 
 // Test different connection strings
 const connections = [
-  'mongodb+srv://Chatbot_user:user_123@cluster0.bfevz4m.mongodb.net/healthbot?retryWrites=true&w=majority',
-  'mongodb+srv://Chatbot_user:user_123@cluster0.bfevz4m.mongodb.net/?retryWrites=true&w=majority',
+  process.env.MONGO_URL || 'mongodb://localhost:27017/healthbot',
   'mongodb://localhost:27017/healthbot'
 ];
+
+// Load environment variables
+require('dotenv').config();
 
 async function testConnections() {
   for (let i = 0; i < connections.length; i++) {
