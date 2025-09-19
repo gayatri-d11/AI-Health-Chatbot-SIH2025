@@ -7,10 +7,13 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.2.1",
     "axios": "^1.11.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
     "node-telegram-bot-api": "^0.66.0",
     "twilio": "^5.9.0"

@@ -1,0 +1,235 @@
+{
+  "name": "WhatsApp Health Bot Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "WhatsApp Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract WhatsApp message data\nconst webhookData = $input.first().json;\n\nif (!webhookData.entry || !webhookData.entry[0].changes) {\n  return [];\n}\n\nconst change = webhookData.entry[0].changes[0];\nif (!change.value.messages) {\n  return [];\n}\n\nconst message = change.value.messages[0];\nconst contact = change.value.contacts[0];\n\nreturn {\n  json: {\n    from: message.from,\n    name: contact.profile.name,\n    message: message.text?.body || message.interactive?.button_reply?.title || 'Voice message',\n    messageType: message.type,\n    timestamp: message.timestamp,\n    messageId: message.id\n  }\n};"
+      },
+      "name": "Extract Message",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Detect language and prepare for AI\nconst message = $json.message;\nconst from = $json.from;\n\n// Simple language detection\nconst hindiPattern = /[\\u0900-\\u097F]/;\nconst teluguPattern = /[\\u0C00-\\u0C7F]/;\nconst tamilPattern = /[\\u0B80-\\u0BFF]/;\n\nlet detectedLanguage = 'en';\nif (hindiPattern.test(message)) detectedLanguage = 'hi';\nelse if (teluguPattern.test(message)) detectedLanguage = 'te';\nelse if (tamilPattern.test(message)) detectedLanguage = 'ta';\n\n// Health-focused AI prompt\nconst healthPrompt = `You are Dr. AI, a helpful medical assistant. Respond to this health query in ${detectedLanguage === 'hi' ? 'Hindi' : detectedLanguage === 'te' ? 'Telugu' : detectedLanguage === 'ta' ? 'Tamil' : 'English'}:\n\nUser Query: ${message}\n\nProvide:\n1. Brief medical advice\n2. When to see a doctor\n3. Emergency warning if needed\n4. Keep response under 300 characters for WhatsApp\n\nIf not health-related, politely redirect to health topics.`;\n\nreturn {\n  json: {\n    ...($json),\n    detectedLanguage,\n    aiPrompt: healthPrompt\n  }\n};"
+      },
+      "name": "Language Detection",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "={{$env.GEMINI_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "contents",
+              "value": "=[{\"parts\":[{\"text\":\"{{$json.aiPrompt}}\"}]}]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Gemini AI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process AI response\nconst aiResponse = $json.candidates[0].content.parts[0].text;\nconst userPhone = $('Extract Message').first().json.from;\n\n// Clean and format response\nlet cleanResponse = aiResponse\n  .replace(/\\*\\*/g, '*')\n  .replace(/\\n\\n/g, '\\n')\n  .trim();\n\n// Add emergency footer if needed\nif (cleanResponse.toLowerCase().includes('emergency') || \n    cleanResponse.toLowerCase().includes('urgent') ||\n    cleanResponse.toLowerCase().includes('आपातकाल')) {\n  cleanResponse += '\\n\\n🚨 Emergency: Call 108';\n}\n\n// Add bot signature\ncleanResponse += '\\n\\n- Dr. AI HealthBot';\n\nreturn {\n  json: {\n    to: userPhone,\n    message: cleanResponse,\n    originalQuery: $('Extract Message').first().json.message\n  }\n};"
+      },
+      "name": "Format Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v17.0/{{$env.WHATSAPP_PHONE_NUMBER_ID}}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.WHATSAPP_ACCESS_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "to",
+              "value": "={{$json.to}}"
+            },
+            {
+              "name": "text",
+              "value": "={\"body\":\"{{$json.message}}\"}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Send WhatsApp Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5000/api/chat/log",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "userId",
+              "value": "={{$('Extract Message').first().json.from}}"
+            },
+            {
+              "name": "message",
+              "value": "={{$('Extract Message').first().json.message}}"
+            },
+            {
+              "name": "response",
+              "value": "={{$json.message}}"
+            },
+            {
+              "name": "channel",
+              "value": "whatsapp"
+            },
+            {
+              "name": "language",
+              "value": "={{$('Language Detection').first().json.detectedLanguage}}"
+            }
+          ]
+        }
+      },
+      "name": "Log Conversation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 480]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "OK"
+      },
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "WhatsApp Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Message": {
+      "main": [
+        [
+          {
+            "node": "Language Detection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Language Detection": {
+      "main": [
+        [
+          {
+            "node": "Gemini AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini AI": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp Response": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

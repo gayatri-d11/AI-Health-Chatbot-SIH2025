@@ -59,9 +59,12 @@ npm install
 
 4. **Environment Setup**
 ```bash
-# Create .env file in backend folder
-GEMINI_API_KEY=your_gemini_api_key
-TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+# Copy environment template
+cd backend
+cp .env.example .env
+
+# Edit .env file with your actual API keys
+# See ENVIRONMENT_SETUP.md for detailed instructions
 ```
 
 5. **Start the Application**

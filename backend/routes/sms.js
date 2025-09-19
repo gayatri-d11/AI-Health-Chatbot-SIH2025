@@ -1,9 +1,21 @@
 const express = require('express');
-const twilio = require('twilio');
 const axios = require('axios');
 const router = express.Router();
 
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+// Initialize Twilio only if credentials are provided
+let client = null;
+try {
+  if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && 
+      process.env.TWILIO_ACCOUNT_SID.startsWith('AC')) {
+    const twilio = require('twilio');
+    client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    console.log('✅ Twilio SMS service initialized');
+  } else {
+    console.log('⚠️ Twilio credentials not configured - SMS features disabled');
+  }
+} catch (error) {
+  console.log('⚠️ Twilio initialization failed - SMS features disabled');
+}
 
 // SMS webhook
 router.post('/webhook', async (req, res) => {
@@ -28,6 +40,11 @@ router.post('/webhook', async (req, res) => {
 
 // Send SMS
 async function sendSMS(to, message) {
+  if (!client) {
+    console.log('SMS service not available - Twilio not configured');
+    return;
+  }
+  
   try {
     await client.messages.create({
       body: message.substring(0, 160), // SMS limit

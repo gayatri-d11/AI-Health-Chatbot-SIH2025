@@ -49,26 +49,28 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center mb-6">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-xl">🩺</span>
+            <div className="w-12 h-12 bg-teal-600 rounded-lg flex items-center justify-center">
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
             </div>
-            <span className="ml-3 text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="ml-3 text-2xl font-semibold text-gray-900">
               Dr. AI HealthBot
             </span>
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">Create Your Account</h2>
-          <p className="mt-2 text-gray-600">Join thousands getting personalized health advice</p>
+          <p className="mt-2 text-gray-600">Join thousands getting personalized health assistance</p>
         </div>
 
         {/* Registration Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-xl shadow-sm p-8 border border-gray-200">
           {error && (
-            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -87,7 +89,7 @@ const RegisterPage = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -103,7 +105,7 @@ const RegisterPage = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
                   placeholder="Enter your email"
                 />
               </div>
@@ -122,7 +124,7 @@ const RegisterPage = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
                   placeholder="Create a password"
                 />
               </div>
@@ -138,7 +140,7 @@ const RegisterPage = () => {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
                   placeholder="Confirm your password"
                 />
               </div>
@@ -156,7 +158,7 @@ const RegisterPage = () => {
                   type="tel"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
                   placeholder="+91 98765 43210"
                 />
               </div>
@@ -173,7 +175,7 @@ const RegisterPage = () => {
                   max="120"
                   value={formData.age}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
                   placeholder="Your age"
                 />
               </div>
@@ -189,7 +191,7 @@ const RegisterPage = () => {
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
                 >
                   <option value="">Select Gender</option>
                   <option value="male">Male</option>
@@ -209,7 +211,7 @@ const RegisterPage = () => {
                   required
                   value={formData.language}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
                 >
                   <option value="en">English</option>
                   <option value="hi">Hindi (हिंदी)</option>
@@ -235,7 +237,7 @@ const RegisterPage = () => {
                 type="text"
                 value={formData.location}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-colors"
                 placeholder="e.g., Mumbai, Maharashtra"
               />
             </div>
@@ -247,15 +249,15 @@ const RegisterPage = () => {
                 name="terms"
                 type="checkbox"
                 required
-                className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="mt-1 h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
               />
               <label htmlFor="terms" className="ml-3 text-sm text-gray-600">
                 I agree to the{' '}
-                <Link to="/terms" className="text-blue-600 hover:text-blue-500">
+                <Link to="/terms" className="text-teal-600 hover:text-teal-500 font-medium">
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link to="/privacy" className="text-blue-600 hover:text-blue-500">
+                <Link to="/privacy" className="text-teal-600 hover:text-teal-500 font-medium">
                   Privacy Policy
                 </Link>
               </label>
@@ -264,7 +266,7 @@ const RegisterPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50"
+              className="w-full bg-teal-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Creating Account...' : 'Create Account'}
             </button>
@@ -274,7 +276,7 @@ const RegisterPage = () => {
           <div className="mt-6 text-center space-y-2">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link to="/login" className="text-blue-600 hover:text-blue-500 font-medium">
+              <Link to="/login" className="text-teal-600 hover:text-teal-500 font-medium">
                 Sign in here
               </Link>
             </p>
@@ -285,23 +287,36 @@ const RegisterPage = () => {
         </div>
 
         {/* Benefits */}
-        <div className="mt-8 bg-white rounded-xl p-6 shadow-lg">
-          <h3 className="font-semibold text-gray-900 mb-4 text-center">🎉 Welcome Benefits:</h3>
+        <div className="mt-8 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <h3 className="font-semibold text-gray-900 mb-4 text-center flex items-center justify-center">
+            <svg className="w-5 h-5 text-teal-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Welcome Benefits:
+          </h3>
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             <div className="flex items-center text-gray-600">
-              <span className="text-green-500 mr-2">✓</span>
+              <svg className="w-4 h-4 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               Free lifetime access to AI health assistant
             </div>
             <div className="flex items-center text-gray-600">
-              <span className="text-green-500 mr-2">✓</span>
+              <svg className="w-4 h-4 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               Personalized health recommendations
             </div>
             <div className="flex items-center text-gray-600">
-              <span className="text-green-500 mr-2">✓</span>
+              <svg className="w-4 h-4 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               Real-time health alerts & reminders
             </div>
             <div className="flex items-center text-gray-600">
-              <span className="text-green-500 mr-2">✓</span>
+              <svg className="w-4 h-4 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               Multi-channel access (WhatsApp, SMS, Voice)
             </div>
           </div>

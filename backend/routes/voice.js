@@ -1,108 +1,161 @@
 const express = require('express');
-const twilio = require('twilio');
-const VoiceResponse = twilio.twiml.VoiceResponse;
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
 
-// Handle incoming voice calls
-router.post('/webhook', (req, res) => {
-  const twiml = new VoiceResponse();
-  
-  // Welcome message in Hindi
-  twiml.say({
-    voice: 'woman',
-    language: 'hi-IN'
-  }, 'स्वास्थ्य सहायक में आपका स्वागत है। अपना सवाल बोलें।');
-  
-  // Gather speech input
-  const gather = twiml.gather({
-    input: 'speech',
-    language: 'hi-IN',
-    speechTimeout: 'auto',
-    action: '/api/voice/process'
-  });
-  
-  gather.say({
-    voice: 'woman',
-    language: 'hi-IN'
-  }, 'बीप के बाद बोलें।');
-  
-  // Fallback if no input
-  twiml.say({
-    voice: 'woman',
-    language: 'hi-IN'
-  }, 'कोई आवाज़ नहीं सुनाई दी। धन्यवाद।');
-  
-  res.type('text/xml');
-  res.send(twiml.toString());
+// Configure multer for audio uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/audio/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
+  }
 });
 
-// Process speech input
-router.post('/process', async (req, res) => {
-  const { SpeechResult, From } = req.body;
-  const twiml = new VoiceResponse();
+const upload = multer({ 
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /wav|mp3|webm|ogg|m4a/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only audio files are allowed'));
+    }
+  },
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
+
+// Twilio Voice webhook for incoming calls
+router.post('/incoming-call', (req, res) => {
+  const { From, To } = req.body;
   
+  console.log(`📞 Incoming call from ${From} to ${To}`);
+  
+  // TwiML response for voice call
+  res.set('Content-Type', 'text/xml');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Gather input="speech" action="/api/voice/process-speech" method="POST" speechTimeout="3" language="hi-IN">
+    <Say voice="Polly.Aditi" language="hi-IN">
+      नमस्ते! मैं डॉक्टर AI हूं। आपकी स्वास्थ्य समस्या के बारे में बताएं।
+    </Say>
+  </Gather>
+  <Say voice="Polly.Aditi" language="hi-IN">
+    आपातकाल के लिए 108 डायल करें। धन्यवाद।
+  </Say>
+</Response>`);
+});
+
+// Process speech input from Twilio
+router.post('/process-speech', async (req, res) => {
   try {
-    // Simple keyword-based responses for demo
-    let response = getVoiceResponse(SpeechResult || '');
+    const { SpeechResult, From } = req.body;
     
-    twiml.say({
-      voice: 'woman',
-      language: 'hi-IN'
-    }, response);
+    console.log(`🎤 Speech from ${From}: "${SpeechResult}"`);
     
-    // Option to ask another question
-    twiml.say({
-      voice: 'woman',
-      language: 'hi-IN'
-    }, 'कोई और सवाल है तो 1 दबाएं।');
+    if (!SpeechResult) {
+      res.set('Content-Type', 'text/xml');
+      return res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="Polly.Aditi" language="hi-IN">
+    मुझे आपकी बात समझ नहीं आई। कृपया दोबारा कहें।
+  </Say>
+  <Hangup/>
+</Response>`);
+    }
     
-    const gather = twiml.gather({
-      numDigits: 1,
-      action: '/api/voice/continue'
+    // Get AI response (reuse existing chat logic)
+    const aiResponse = await getChatResponse(SpeechResult, From, 'hi');
+    
+    // Convert AI response to speech-friendly format
+    const speechText = aiResponse.response
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold formatting
+      .replace(/•/g, '') // Remove bullet points
+      .replace(/\n/g, '. ') // Replace newlines with pauses
+      .substring(0, 500); // Limit length for voice
+    
+    res.set('Content-Type', 'text/xml');
+    res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="Polly.Aditi" language="hi-IN">
+    ${speechText}
+  </Say>
+  <Pause length="2"/>
+  <Say voice="Polly.Aditi" language="hi-IN">
+    आपातकाल के लिए 108 डायल करें। स्वस्थ रहें।
+  </Say>
+  <Hangup/>
+</Response>`);
+    
+  } catch (error) {
+    console.error('Voice processing error:', error);
+    res.set('Content-Type', 'text/xml');
+    res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="Polly.Aditi" language="hi-IN">
+    तकनीकी समस्या है। आपातकाल के लिए 108 डायल करें।
+  </Say>
+  <Hangup/>
+</Response>`);
+  }
+});
+
+// Upload audio file for processing
+router.post('/upload-audio', upload.single('audio'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No audio file uploaded' });
+    }
+    
+    const audioPath = req.file.path;
+    console.log(`🎵 Audio uploaded: ${audioPath}`);
+    
+    // Here you would integrate with speech-to-text service
+    // For now, return a placeholder response
+    res.json({
+      success: true,
+      message: 'Audio uploaded successfully',
+      transcript: 'Audio processing not implemented yet',
+      audioPath: audioPath
     });
     
   } catch (error) {
-    twiml.say({
-      voice: 'woman',
-      language: 'hi-IN'
-    }, 'तकनीकी समस्या है। बाद में कॉल करें।');
+    console.error('Audio upload error:', error);
+    res.status(500).json({ error: 'Audio upload failed' });
   }
-  
-  res.type('text/xml');
-  res.send(twiml.toString());
 });
 
-// Continue conversation
-router.post('/continue', (req, res) => {
-  const { Digits } = req.body;
-  const twiml = new VoiceResponse();
-  
-  if (Digits === '1') {
-    twiml.redirect('/api/voice/webhook');
-  } else {
-    twiml.say({
-      voice: 'woman',
-      language: 'hi-IN'
-    }, 'धन्यवाद। स्वस्थ रहें।');
-    twiml.hangup();
-  }
-  
-  res.type('text/xml');
-  res.send(twiml.toString());
-});
-
-function getVoiceResponse(speechText) {
-  const text = speechText.toLowerCase();
-  
-  if (text.includes('बुखार') || text.includes('fever')) {
-    return 'बुखार में आराम करें, पानी पिएं। 102 डिग्री से ज्यादा हो तो डॉक्टर से मिलें।';
-  } else if (text.includes('खांसी') || text.includes('cough')) {
-    return 'खांसी में गर्म पानी पिएं, भाप लें। 2 हफ्ते से ज्यादा हो तो जांच कराएं।';
-  } else if (text.includes('टीका') || text.includes('vaccine')) {
-    return 'सभी जरूरी टीके लगवाएं। कोविड, फ्लू और अन्य टीकों की जानकारी के लिए नजदीकी स्वास्थ्य केंद्र जाएं।';
-  } else {
-    return 'आपका सवाल समझ नहीं आया। कृपया साफ बोलें या दूसरे शब्दों में पूछें।';
+// Get chat response (reuse from chat.js)
+async function getChatResponse(message, userId, language) {
+  try {
+    const axios = require('axios');
+    const response = await axios.post('http://localhost:9000/api/chat', {
+      message, userId, language
+    });
+    return response.data;
+  } catch (error) {
+    return {
+      response: 'तकनीकी समस्या है। आपातकाल के लिए 108 डायल करें।',
+      confidence: 0.5
+    };
   }
 }
+
+// Test voice endpoint
+router.get('/test', (req, res) => {
+  res.json({
+    message: 'Voice API is working!',
+    features: [
+      'Twilio Voice Calls',
+      'Speech Recognition',
+      'Text-to-Speech',
+      'Audio File Upload'
+    ]
+  });
+});
 
 module.exports = router;

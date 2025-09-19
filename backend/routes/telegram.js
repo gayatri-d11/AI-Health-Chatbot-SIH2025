@@ -1,9 +1,20 @@
 const express = require('express');
-const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 const router = express.Router();
 
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
+// Initialize Telegram bot only if token is provided
+let bot = null;
+try {
+  if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_BOT_TOKEN !== 'your_telegram_bot_token_here') {
+    const TelegramBot = require('node-telegram-bot-api');
+    bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
+    console.log('✅ Telegram bot initialized');
+  } else {
+    console.log('⚠️ Telegram bot token not configured');
+  }
+} catch (error) {
+  console.log('⚠️ Telegram bot initialization failed:', error.message);
+}
 
 // Telegram webhook
 router.post('/webhook', async (req, res) => {
@@ -21,7 +32,11 @@ router.post('/webhook', async (req, res) => {
       const aiResponse = await getChatResponse(userMessage, userId, 'hi');
       
       // Send response
-      await bot.sendMessage(chatId, aiResponse.response);
+      if (bot) {
+        await bot.sendMessage(chatId, aiResponse.response);
+      } else {
+        console.log('Telegram bot not available');
+      }
     }
     
     res.sendStatus(200);
