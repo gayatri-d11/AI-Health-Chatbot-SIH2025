@@ -11,7 +11,7 @@ const WhatsAppTest = () => {
     setResult('');
     
     try {
-      const response = await fetch('http://localhost:9000/api/whatsapp/test', {
+      const response = await fetch('http://localhost:8000/api/whatsapp/test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

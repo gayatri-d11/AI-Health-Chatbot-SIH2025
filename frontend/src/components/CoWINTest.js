@@ -10,7 +10,7 @@ const CoWINTest = () => {
 
     // Test 1: Backend Health Check
     try {
-      const response = await fetch('http://localhost:9000/health');
+      const response = await fetch('http://localhost:8000/health');
       const data = await response.json();
       results.push({
         test: 'Backend Health Check',
@@ -27,7 +27,7 @@ const CoWINTest = () => {
 
     // Test 2: Vaccination API with Pincode
     try {
-      const response = await fetch('http://localhost:9000/api/alerts/vaccination', {
+      const response = await fetch('http://localhost:8000/api/alerts/vaccination', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ location: '110001' })
@@ -54,7 +54,7 @@ const CoWINTest = () => {
 
     // Test 3: Vaccination API with City Name
     try {
-      const response = await fetch('http://localhost:9000/api/alerts/vaccination', {
+      const response = await fetch('http://localhost:8000/api/alerts/vaccination', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ location: 'Mumbai' })
@@ -81,7 +81,7 @@ const CoWINTest = () => {
 
     // Test 4: Chat API with Vaccination Query
     try {
-      const response = await fetch('http://localhost:9000/api/chat', {
+      const response = await fetch('http://localhost:8000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

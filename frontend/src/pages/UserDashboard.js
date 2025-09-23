@@ -10,6 +10,7 @@ const UserDashboard = () => {
   const [healthAlerts, setHealthAlerts] = useState([]);
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showHistory, setShowHistory] = useState(false);
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -24,9 +25,9 @@ const UserDashboard = () => {
   const fetchUserData = async () => {
     try {
       const [profileRes, alertsRes, chatRes] = await Promise.all([
-        fetch(`http://localhost:9000/api/users/profile/${currentUser._id}`),
-        fetch(`http://localhost:9000/api/users/alerts/${currentUser.location || 'All India'}`),
-        fetch(`http://localhost:9000/api/users/chat-history/${currentUser._id}`)
+        fetch(`http://localhost:8000/api/users/profile/${currentUser._id}`),
+        fetch(`http://localhost:8000/api/users/alerts/${currentUser.location || 'All India'}`),
+        fetch(`http://localhost:8000/api/users/chat-history/${currentUser._id}`)
       ]);
       
       const profileData = await profileRes.json();
@@ -71,7 +72,7 @@ const UserDashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <span className="ml-3 text-xl font-semibold text-gray-900">🩺 Dr. AI HealthBot</span>
+              <span className="ml-3 text-xl font-semibold text-gray-900">🩺 YOGIC.ai HealthBot</span>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
@@ -95,7 +96,7 @@ const UserDashboard = () => {
         <div className="bg-gradient-to-r from-teal-500 to-teal-700 text-white p-6 rounded-2xl mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold mb-1">🩺 Dr. AI Health Assistant</h1>
+              <h1 className="text-2xl font-bold mb-1">🩺 YOGIC.ai Health Assistant</h1>
               <p className="text-teal-100">Ask me anything about your health - I'm here 24/7 to help!</p>
             </div>
             <div className="flex items-center bg-teal-600 px-4 py-2 rounded-lg">
@@ -239,7 +240,7 @@ const UserDashboard = () => {
           <div className="border-b border-gray-200">
             <nav className="flex space-x-8 px-6">
               {[
-                { id: 'chat', label: '🩺 AI Chat', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
+                { id: 'chat', label: '🩺 YOGIC.ai Chat', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
                 { id: 'overview', label: 'Dashboard', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
                 { id: 'quiz', label: 'Health Quiz', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
                 { id: 'profile', label: 'Profile', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' }
@@ -296,7 +297,7 @@ const UserDashboard = () => {
                         onClick={() => setActiveTab('chat')}
                         className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-left"
                       >
-                        💬 Chat with Dr. AI
+                        💬 Chat with YOGIC.ai
                       </button>
                       <button 
                         onClick={() => navigate('/vaccination-centers')}
@@ -317,22 +318,50 @@ const UserDashboard = () => {
                   </div>
                 </div>
                 
-                {/* Recent Chat History */}
+                {/* Chat History Toggle */}
                 {chatHistory.length > 0 && (
                   <div className="bg-gray-50 rounded-xl p-6">
-                    <h4 className="font-semibold text-gray-800 mb-4">Recent Conversations</h4>
-                    <div className="space-y-3 max-h-60 overflow-y-auto">
-                      {chatHistory.slice(-5).map((msg, index) => (
-                        <div key={index} className={`p-3 rounded-lg ${
-                          msg.type === 'user' ? 'bg-blue-100 ml-8' : 'bg-white mr-8'
-                        }`}>
-                          <div className="text-xs text-gray-500 mb-1">
-                            {msg.type === 'user' ? 'You' : 'Dr. AI'} - {new Date(msg.timestamp).toLocaleString()}
-                          </div>
-                          <div className="text-sm">{msg.text}</div>
-                        </div>
-                      ))}
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-semibold text-gray-800">Chat History</h4>
+                      <button
+                        onClick={() => setShowHistory(!showHistory)}
+                        className="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <svg className="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-sm font-medium text-gray-700">
+                          {showHistory ? 'Hide History' : 'View History'}
+                        </span>
+                        <svg className={`w-4 h-4 ml-2 text-gray-600 transition-transform ${showHistory ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
                     </div>
+                    
+                    {showHistory && (
+                      <div className="space-y-3 max-h-60 overflow-y-auto animate-fadeIn">
+                        {chatHistory.slice(-5).map((msg, index) => (
+                          <div key={index} className={`p-3 rounded-lg transition-all duration-200 ${
+                            msg.type === 'user' ? 'bg-blue-100 ml-8' : 'bg-white mr-8'
+                          }`}>
+                            <div className="text-xs text-gray-500 mb-1">
+                              {msg.type === 'user' ? 'You' : 'YOGIC.ai'} - {new Date(msg.timestamp).toLocaleString()}
+                            </div>
+                            <div className="text-sm">{msg.text}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {!showHistory && (
+                      <div className="text-center py-8 text-gray-500">
+                        <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p className="text-sm">Click "View History" to see your recent conversations</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import VoiceInterface, { useVoiceResponse } from './VoiceInterface';
+import { useVoiceResponse } from './VoiceInterface';
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: 'ai',
-      content: 'Hello! I\'m Dr. AI, your personal health assistant. How can I help you today?',
+      content: 'Hello! I\'m YOGIC.ai, your personal health assistant. How can I help you today?',
       timestamp: new Date(),
       language: 'en'
     }
@@ -15,11 +15,13 @@ const ChatInterface = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
-  const [isTyping, setIsTyping] = useState(false);
+
   const [mounted, setMounted] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [liveTranscript, setLiveTranscript] = useState('');
+
+  const [showHistory, setShowHistory] = useState(false);
+  const [chatHistory, setChatHistory] = useState([]);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const { currentUser } = useAuth();
@@ -27,6 +29,7 @@ const ChatInterface = () => {
   
   useEffect(() => {
     setMounted(true);
+    fetchChatHistory();
     
     // Initialize Speech Recognition
     if ('webkitSpeechRecognition' in window) {
@@ -58,7 +61,6 @@ const ChatInterface = () => {
         // Show real-time text in input field
         const fullTranscript = finalTranscript + interimTranscript;
         setInputMessage(fullTranscript);
-        setLiveTranscript(fullTranscript);
       };
       
       recognitionRef.current.onerror = (event) => {
@@ -71,7 +73,21 @@ const ChatInterface = () => {
         // Don't auto-send, wait for user to click mic again
       };
     }
-  }, [selectedLanguage]);
+  }, [selectedLanguage]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fetchChatHistory = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/users/chat-history/${currentUser?._id || currentUser?.id || 'anonymous'}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      const data = await response.json();
+      setChatHistory(data.messages || []);
+    } catch (error) {
+      console.error('Failed to fetch chat history:', error);
+    }
+  };
 
   const languages = {
     'en': 'English',
@@ -127,7 +143,7 @@ const ChatInterface = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:9000/api/chat', {
+      const response = await fetch('http://localhost:8000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -155,6 +171,9 @@ const ChatInterface = () => {
 
       setMessages(prev => [...prev, aiMessage]);
       
+      // Update chat history
+      setChatHistory(prev => [...prev, userMessage, aiMessage]);
+      
       // Speak AI response if voice is enabled and not recording
       if (voiceEnabled && data.response && !isRecording) {
         setTimeout(() => {
@@ -171,6 +190,9 @@ const ChatInterface = () => {
         language: selectedLanguage
       };
       setMessages(prev => [...prev, errorMessage]);
+      
+      // Update chat history
+      setChatHistory(prev => [...prev, userMessage, errorMessage]);
     }
 
     setIsLoading(false);
@@ -192,7 +214,6 @@ const ChatInterface = () => {
         }
         
         setIsRecording(true);
-        setLiveTranscript('');
         setInputMessage('');
         recognitionRef.current.start();
       } catch (error) {
@@ -245,7 +266,7 @@ const ChatInterface = () => {
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
               </div>
               <div className="ml-4">
-                <h1 className="text-xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors">Dr. AI Chat</h1>
+                <h1 className="text-xl font-bold text-gray-900 group-hover:text-teal-600 transition-colors">YOGIC.ai Chat</h1>
                 <p className="text-sm text-gray-500 flex items-center">
                   <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
                   Your AI Health Assistant
@@ -253,6 +274,16 @@ const ChatInterface = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setShowHistory(!showHistory)}
+                className="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm hover:bg-gray-50 transition-colors shadow-sm hover:shadow-md"
+              >
+                <svg className="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="font-medium text-gray-700">History</span>
+              </button>
+              
               <div className="relative">
                 <select
                   value={selectedLanguage}
@@ -292,6 +323,62 @@ const ChatInterface = () => {
           </div>
         </div>
       </div>
+
+      {/* History Sidebar */}
+      <div className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform transition-transform duration-300 z-50 ${
+        showHistory ? 'translate-x-0' : 'translate-x-full'
+      }`}>
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+            <svg className="w-5 h-5 mr-2 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Chat History
+          </h3>
+          <button
+            onClick={() => setShowHistory(false)}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div className="p-4 overflow-y-auto h-full pb-20">
+          {chatHistory.length > 0 ? (
+            <div className="space-y-3">
+              {chatHistory.map((msg, index) => (
+                <div key={index} className={`p-3 rounded-lg ${
+                  msg.type === 'user' ? 'bg-teal-50 border border-teal-200' : 'bg-gray-50 border border-gray-200'
+                }`}>
+                  <div className="text-xs text-gray-500 mb-2 flex items-center">
+                    <span className={`w-2 h-2 rounded-full mr-2 ${
+                      msg.type === 'user' ? 'bg-teal-500' : 'bg-gray-500'
+                    }`}></span>
+                    {msg.type === 'user' ? 'You' : 'Dr. AI'}
+                  </div>
+                  <div className="text-sm text-gray-800">{msg.content || msg.text}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <p className="text-sm">No chat history</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Overlay */}
+      {showHistory && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-30 z-40"
+          onClick={() => setShowHistory(false)}
+        ></div>
+      )}
 
       {/* Chat Container */}
       <div className="relative max-w-4xl mx-auto px-4 py-6">
@@ -337,7 +424,7 @@ const ChatInterface = () => {
                     
                     {message.type === 'ai' && (
                       <div className="flex items-center mb-3">
-                        <span className="font-bold text-sm text-gray-800">Dr. AI</span>
+                        <span className="font-bold text-sm text-gray-800">YOGIC.ai</span>
                         {message.confidence && (
                           <span className="ml-2 text-xs bg-gradient-to-r from-green-100 to-green-200 text-green-800 px-2 py-1 rounded-full font-medium">
                             {Math.round(message.confidence * 100)}% confident
@@ -386,7 +473,7 @@ const ChatInterface = () => {
                   <div className="relative bg-white border border-gray-100 rounded-2xl px-6 py-4 shadow-lg">
                     <div className="absolute bottom-0 -left-1 w-3 h-3 bg-white border-r border-b border-gray-100 transform rotate-45"></div>
                     <div className="flex items-center space-x-3">
-                      <span className="text-sm text-gray-600 font-medium">Dr. AI is thinking</span>
+                      <span className="text-sm text-gray-600 font-medium">YOGIC.ai is thinking</span>
                       <div className="flex space-x-1">
                         <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce"></div>
                         <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>

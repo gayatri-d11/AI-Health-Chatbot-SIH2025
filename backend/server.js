@@ -1,89 +1,88 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
-const { connectDB } = require('./models/mongodb');
+const dotenv = require('dotenv');
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Connect Database
-connectDB();
-
-// Create uploads directory for audio files
-const fs = require('fs');
-const uploadsDir = './uploads/audio';
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Middleware
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // For Twilio form data
+app.use(express.urlencoded({ extended: true }));
 
-// Logging middleware
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`, req.body);
-  next();
+// MongoDB connection
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/healthcare-ai';
+
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log('Connected to MongoDB');
+})
+.catch((error) => {
+  console.error('MongoDB connection error:', error);
 });
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/chat', require('./routes/chat'));
-app.use('/api/quiz', require('./routes/quiz'));
-app.use('/api/alerts', require('./routes/alerts'));
-app.use('/api/users', require('./routes/users'));
-app.use('/api/admin', require('./routes/admin'));
-app.use('/api/admin-setup', require('./routes/admin-setup'));
-app.use('/api/telegram', require('./routes/telegram'));
-app.use('/api/whatsapp', require('./routes/whatsapp'));
-app.use('/api/sms', require('./routes/sms'));
-app.use('/api/voice', require('./routes/voice'));
+const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const chatRoutes = require('./routes/chat');
+const debugChatRoutes = require('./routes/debug-chat');
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/chat', debugChatRoutes);
 
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'YOGIC.ai API is running',
+    timestamp: new Date().toISOString()
+  });
 });
 
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'HealthBot API is running!',
-    endpoints: {
-      auth: '/api/auth/login, /api/auth/register',
-      chat: '/api/chat',
-      alerts: '/api/alerts',
-      users: '/api/users'
+// Demo credentials endpoint (public)
+app.get('/api/demo', (req, res) => {
+  res.json({
+    user: {
+      email: 'demo@healthcareai.com',
+      password: 'demo123',
+      note: 'Demo user account for YOGIC.ai'
+    },
+    admin: {
+      email: 'admin@healthcareai.com',
+      password: 'admin123',
+      note: 'Demo admin account for YOGIC.ai'
     }
   });
 });
 
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Error:', error);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: error.message 
+  });
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({ 
+    error: 'Route not found',
+    path: req.originalUrl 
+  });
+});
+
+const PORT = process.env.PORT || 8000;
+
 app.listen(PORT, () => {
-  console.log(`✅ HealthBot API running on http://localhost:${PORT}`);
-  console.log(`🏥 AI-Powered Health Assistant for Rural India`);
-  console.log(`📱 Multi-channel: Web, WhatsApp, SMS, Voice`);
-  console.log(`🌐 Multilingual: 10+ Indian Languages`);
-  console.log(`🔐 Secure & Private Health Data`);
-  console.log(`\n📋 To create admin user: POST /api/admin-setup/create-admin`);
-  console.log(`🔑 Admin setup key: SIH2024_ADMIN_SETUP`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/api/health`);
+  console.log(`Demo credentials: http://localhost:${PORT}/api/demo`);
 });

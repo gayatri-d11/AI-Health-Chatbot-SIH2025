@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+ 
+const bcrypt = require('bcryptjs');
 const { User } = require('../models/mongodb');
 
 // Demo credentials
@@ -60,9 +62,9 @@ router.post('/login', async (req, res) => {
     }
     
     // Check MongoDB users
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email });
     
-    if (user) {
+    if (user && (await bcrypt.compare(password, user.password))) {
       // Validate login type matches user role
       if (loginType === 'admin' && user.role !== 'admin') {
         return res.status(401).json({ error: 'Admin credentials required' });
@@ -110,10 +112,14 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Email already registered' });
     }
     
+    // Hash the password before saving
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const newUser = await User.create({ 
       name, 
       email, 
-      password, 
+      password: hashedPassword, 
       phone: phone || null,
       age: age || null,
       location: location || null,

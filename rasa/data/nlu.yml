@@ -9,6 +9,64 @@ nlu:
     - नमस्ते
     - हैलो
     - सुप्रभात
+    - good morning
+    - namaste
+
+- intent: goodbye
+  examples: |
+    - bye
+    - goodbye
+    - अलविदा
+    - धन्यवाद
+    - see you later
+    - take care
+
+- intent: affirm
+  examples: |
+    - yes
+    - हाँ
+    - जी हाँ
+    - correct
+    - right
+    - okay
+
+- intent: deny
+  examples: |
+    - no
+    - नहीं
+    - ना
+    - wrong
+    - incorrect
+
+- intent: mood_great
+  examples: |
+    - great
+    - excellent
+    - बहुत अच्छा
+    - perfect
+    - wonderful
+
+- intent: mood_unhappy
+  examples: |
+    - sad
+    - उदास
+    - not good
+    - terrible
+    - bad
+
+- intent: bot_challenge
+  examples: |
+    - are you a bot?
+    - क्या आप बॉट हैं?
+    - are you human?
+    - who are you?
+
+- intent: ask_symptoms
+  examples: |
+    - symptoms
+    - लक्षण
+    - what are symptoms
+    - लक्षण क्या हैं
 
 - intent: ask_fever
   examples: |
@@ -18,6 +76,8 @@ nlu:
     - मुझे बुखार है
     - बुखार के लक्षण
     - बुखार में क्या करें
+    - high temperature
+    - body heat
 
 - intent: ask_cough
   examples: |
@@ -25,20 +85,24 @@ nlu:
     - cough treatment
     - मुझे खांसी है
     - खांसी का इलाज
+    - dry cough
+    - throat problem
 
-- intent: ask_covid
+- intent: ask_headache
   examples: |
-    - covid symptoms
-    - coronavirus
-    - कोविड के लक्षण
-    - कोरोना वायरस
+    - headache
+    - सिरदर्द
+    - head pain
+    - migraine
+    - सिर में दर्द
 
-- intent: ask_dengue
+- intent: ask_prevention
   examples: |
-    - dengue symptoms
-    - dengue prevention
-    - डेंगू के लक्षण
-    - डेंगू से बचाव
+    - prevention
+    - बचाव
+    - how to prevent
+    - कैसे बचें
+    - precautions
 
 - intent: ask_vaccination
   examples: |
@@ -46,6 +110,8 @@ nlu:
     - vaccine information
     - टीकाकरण
     - टीका कब लगवाएं
+    - vaccine booking
+    - immunization
 
 - intent: ask_emergency
   examples: |
@@ -53,10 +119,78 @@ nlu:
     - urgent help
     - आपातकाल
     - तुरंत मदद
+    - ambulance
+    - hospital
 
-- intent: goodbye
+- intent: ask_medicine
   examples: |
-    - bye
-    - goodbye
-    - अलविदा
-    - धन्यवाद
+    - medicine
+    - दवा
+    - medication
+    - what medicine
+    - कौन सी दवा
+
+- intent: ask_doctor
+  examples: |
+    - doctor
+    - डॉक्टर
+    - physician
+    - need doctor
+    - डॉक्टर चाहिए
+
+- intent: ask_hospital
+  examples: |
+    - hospital
+    - अस्पताल
+    - clinic
+    - nearest hospital
+    - नजदीकी अस्पताल
+
+- intent: ask_covid
+  examples: |
+    - covid symptoms
+    - coronavirus
+    - कोविड के लक्षण
+    - कोरोना वायरस
+    - covid vaccine
+    - covid test
+
+- intent: ask_dengue
+  examples: |
+    - dengue symptoms
+    - dengue prevention
+    - डेंगू के लक्षण
+    - डेंगू से बचाव
+    - mosquito fever
+    - डेंगू बुखार
+
+- intent: ask_malaria
+  examples: |
+    - malaria
+    - मलेरिया
+    - malaria symptoms
+    - मलेरिया के लक्षण
+
+- intent: ask_diabetes
+  examples: |
+    - diabetes
+    - मधुमेह
+    - sugar
+    - blood sugar
+    - शुगर
+
+- intent: ask_hypertension
+  examples: |
+    - high blood pressure
+    - उच्च रक्तचाप
+    - hypertension
+    - BP problem
+
+- intent: out_of_scope
+  examples: |
+    - order food
+    - weather
+    - book cab
+    - joke
+    - खाना ऑर्डर करें
+    - मौसम कैसा है

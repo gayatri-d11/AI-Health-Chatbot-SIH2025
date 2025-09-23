@@ -1,0 +1,277 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - ask_fever
+  - ask_headache
+  - ask_cough
+  - ask_cold
+  - ask_stomach_pain
+  - ask_chest_pain
+  - ask_breathing_difficulty
+  - ask_diabetes
+  - ask_blood_pressure
+  - ask_heart_disease
+  - ask_vaccination
+  - ask_emergency
+  - ask_medication
+  - ask_diet
+  - ask_exercise
+  - ask_mental_health
+  - ask_pregnancy
+  - ask_child_health
+  - ask_elderly_care
+  - symptom_checker
+  - health_tips
+
+entities:
+  - symptom
+  - age
+  - gender
+  - duration
+  - severity
+
+slots:
+  user_symptom:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: symptom
+  user_age:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: age
+  emergency_level:
+    type: categorical
+    values:
+    - low
+    - medium
+    - high
+    - critical
+    mappings:
+    - type: custom
+
+responses:
+  utter_greet:
+  - text: "Hello! I'm YOGIC.ai, your health assistant. How can I help you today? 🩺"
+  - text: "Namaste! I'm YOGIC.ai. I'm here to help with your health questions. What would you like to know? 🙏"
+
+  utter_goodbye:
+  - text: "Take care of your health! Remember to consult a healthcare professional for serious concerns. Stay healthy! 🌟"
+  - text: "Goodbye! For emergencies, call **108**. Stay safe and healthy! 💚"
+
+  utter_iamabot:
+  - text: "I am YOGIC.ai, an AI health assistant. I provide health information based on **official government guidelines** and medical best practices."
+
+  utter_fever_advice:
+  - text: |
+      **Fever Management Guidelines** (Source: Ministry of Health & Family Welfare, India)
+      
+      **Immediate Care:**
+      • **Rest** and stay hydrated
+      • Take **Paracetamol** (500mg) every 6-8 hours if needed
+      • Use **cold compress** on forehead
+      • Wear light clothing
+      
+      **⚠️ Seek Medical Help If:**
+      • Fever above **103°F (39.4°C)**
+      • Persists for more than **3 days**
+      • Accompanied by severe headache, neck stiffness, or rash
+      • Difficulty breathing or chest pain
+      
+      **Emergency: Call 108 immediately**
+
+  utter_headache_advice:
+  - text: |
+      **Headache Relief Guidelines** (Source: AIIMS Medical Guidelines)
+      
+      **Home Remedies:**
+      • **Rest** in a quiet, dark room
+      • Apply **cold/warm compress**
+      • Stay **hydrated** (8-10 glasses water daily)
+      • Gentle neck and shoulder massage
+      
+      **Medication:**
+      • **Paracetamol** 500mg or **Ibuprofen** 400mg
+      • Avoid overuse of painkillers
+      
+      **⚠️ Warning Signs:**
+      • **Sudden severe headache** (worst ever)
+      • Headache with fever and neck stiffness
+      • Vision changes or confusion
+      • **Call 108 for emergency care**
+
+  utter_cough_advice:
+  - text: |
+      **Cough Management** (Source: National Health Portal, India)
+      
+      **Natural Remedies:**
+      • **Honey and ginger** tea (2-3 times daily)
+      • **Steam inhalation** with eucalyptus oil
+      • Warm salt water gargling
+      • Stay hydrated and avoid cold foods
+      
+      **When to Consult Doctor:**
+      • Cough persists for more than **2 weeks**
+      • **Blood in sputum**
+      • High fever with cough
+      • Difficulty breathing
+      
+      **COVID-19 Protocol:** If dry cough with fever, get tested and isolate immediately
+
+  utter_chest_pain_emergency:
+  - text: |
+      **🚨 CHEST PAIN - EMERGENCY PROTOCOL**
+      
+      **IMMEDIATE ACTION REQUIRED:**
+      • **Call 108 NOW** - Don't delay!
+      • Sit upright, don't lie down
+      • Loosen tight clothing
+      • If prescribed, take **Aspirin 325mg** (chew, don't swallow)
+      
+      **⚠️ Heart Attack Warning Signs:**
+      • **Crushing chest pain**
+      • Pain radiating to left arm, jaw, or back
+      • Sweating, nausea, shortness of breath
+      • Feeling of impending doom
+      
+      **This is a MEDICAL EMERGENCY - Get help immediately!**
+
+  utter_breathing_difficulty:
+  - text: |
+      **🚨 BREATHING DIFFICULTY - URGENT CARE**
+      
+      **IMMEDIATE STEPS:**
+      • **Call 108 immediately**
+      • Sit upright, lean slightly forward
+      • Loosen tight clothing
+      • Stay calm and breathe slowly
+      
+      **Emergency Signs:**
+      • **Severe shortness of breath**
+      • Blue lips or fingernails
+      • Cannot speak in full sentences
+      • Chest tightness
+      
+      **DO NOT DELAY - This requires immediate medical attention!**
+
+  utter_diabetes_management:
+  - text: |
+      **Diabetes Management** (Source: National Programme for Prevention & Control of Diabetes)
+      
+      **Blood Sugar Monitoring:**
+      • **Fasting:** 70-100 mg/dL (normal)
+      • **Post-meal:** Less than 140 mg/dL
+      • **HbA1c:** Less than 7% for diabetics
+      
+      **Lifestyle Management:**
+      • **Regular exercise** (30 min daily)
+      • **Balanced diet** - avoid refined sugars
+      • **Regular medication** as prescribed
+      • **Foot care** - check daily for cuts/sores
+      
+      **⚠️ Emergency Signs:**
+      • Blood sugar below **70 mg/dL** or above **300 mg/dL**
+      • **Call your doctor immediately**
+
+  utter_vaccination_info:
+  - text: |
+      **Vaccination Information** (Source: CoWIN Portal, Govt of India)
+      
+      **COVID-19 Vaccination:**
+      • **Covishield/Covaxin** - 2 doses required
+      • **Booster dose** after 9 months
+      • Book on **CoWIN app** or visit nearest center
+      
+      **Other Important Vaccines:**
+      • **Hepatitis B** - 3 doses
+      • **Tetanus** - Every 10 years
+      • **Influenza** - Annual
+      
+      **Find Centers:** Visit cowin.gov.in or call **1075**
+
+  utter_emergency_numbers:
+  - text: |
+      **🚨 EMERGENCY CONTACT NUMBERS**
+      
+      • **National Emergency:** 108
+      • **COVID Helpline:** 1075
+      • **Women Helpline:** 1091
+      • **Child Helpline:** 1098
+      • **Mental Health:** 9152987821
+      • **Poison Control:** 1066
+      
+      **For immediate medical emergency, call 108**
+
+  utter_medication_safety:
+  - text: |
+      **Medication Safety Guidelines** (Source: Central Drugs Standard Control Organization)
+      
+      **Safe Practices:**
+      • **Never self-medicate** with prescription drugs
+      • Check **expiry dates** before use
+      • Follow **prescribed dosage** exactly
+      • Store medicines in **cool, dry place**
+      
+      **Common Safe Medicines:**
+      • **Paracetamol:** 500mg every 6-8 hours (max 4g/day)
+      • **ORS:** For dehydration
+      • **Antacid:** For acidity
+      
+      **⚠️ Always consult a pharmacist or doctor before taking any medication**
+
+  utter_mental_health_support:
+  - text: |
+      **Mental Health Support** (Source: National Mental Health Programme)
+      
+      **Immediate Help:**
+      • **NIMHANS Helpline:** 080-46110007
+      • **Vandrevala Foundation:** 9999666555
+      • **iCall:** 9152987821
+      
+      **Self-Care Tips:**
+      • **Regular sleep** (7-8 hours)
+      • **Physical exercise** daily
+      • **Meditation** and breathing exercises
+      • Stay connected with family/friends
+      
+      **⚠️ If having suicidal thoughts, call helpline immediately**
+
+  utter_ask_symptoms:
+  - text: "Can you describe your symptoms? Please mention duration, severity, and any other details that might help me assist you better."
+
+  utter_consult_doctor:
+  - text: |
+      **⚠️ Medical Consultation Required**
+      
+      Based on your symptoms, I recommend consulting a healthcare professional immediately.
+      
+      **Find Doctors:**
+      • **Practo:** Online consultation
+      • **Government Hospitals:** Free/subsidized care
+      • **Primary Health Centers:** Local area
+      
+      **For emergencies: Call 108**
+
+actions:
+  - action_symptom_checker
+  - action_emergency_assessment
+  - action_provide_health_tips
+  - validate_symptom_form
+
+forms:
+  symptom_form:
+    required_slots:
+    - user_symptom
+    - user_age
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

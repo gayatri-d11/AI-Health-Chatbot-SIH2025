@@ -13,7 +13,7 @@ const VaccinationAlert = ({ userLocation }) => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:9000/api/alerts/vaccination', {
+      const response = await fetch('http://localhost:8000/api/alerts/vaccination', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

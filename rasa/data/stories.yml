@@ -1,0 +1,35 @@
+version: "3.1"
+
+stories:
+
+- story: greet and ask fever
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_fever
+  - action: utter_fever_advice
+
+- story: ask about covid
+  steps:
+  - intent: ask_covid
+  - action: utter_covid_info
+
+- story: ask about vaccination
+  steps:
+  - intent: ask_vaccination
+  - action: utter_vaccination_info
+
+- story: emergency help
+  steps:
+  - intent: ask_emergency
+  - action: utter_emergency
+
+- story: goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: bot challenge
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot

@@ -1,0 +1,49 @@
+version: "3.1"
+
+rules:
+
+- rule: Say goodbye anytime the user says goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- rule: Say 'I am a bot' anytime the user challenges
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+
+- rule: Emergency chest pain immediate response
+  steps:
+  - intent: ask_chest_pain
+  - action: utter_chest_pain_emergency
+
+- rule: Emergency breathing difficulty immediate response
+  steps:
+  - intent: ask_breathing_difficulty
+  - action: utter_breathing_difficulty
+
+- rule: Emergency help request
+  steps:
+  - intent: ask_emergency
+  - action: utter_emergency_numbers
+
+- rule: Activate symptom form
+  steps:
+  - intent: symptom_checker
+  - action: symptom_form
+  - active_loop: symptom_form
+
+- rule: Submit symptom form
+  condition:
+  - active_loop: symptom_form
+  steps:
+  - action: symptom_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: validate_symptom_form
+
+- rule: Greet user
+  steps:
+  - intent: greet
+  - action: utter_greet

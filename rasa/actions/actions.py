@@ -2,33 +2,7 @@ from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 import requests
-
-class ActionGetHealthAlerts(Action):
-    def name(self) -> Text:
-        return "action_get_health_alerts"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        
-        location = tracker.get_slot("user_location") or "India"
-        
-        try:
-            response = requests.get(f"http://localhost:3000/api/alerts?location={location}")
-            alerts = response.json()
-            
-            if alerts:
-                message = f"स्वास्थ्य अलर्ट ({location}):\n"
-                for alert in alerts[:2]:
-                    message += f"• {alert['message']}\n"
-            else:
-                message = "फिलहाल कोई स्वास्थ्य अलर्ट नहीं है।"
-                
-        except Exception:
-            message = "अलर्ट जानकारी लेने में समस्या है।"
-        
-        dispatcher.utter_message(text=message)
-        return []
+import json
 
 class ActionSymptomChecker(Action):
     def name(self) -> Text:
@@ -38,13 +12,58 @@ class ActionSymptomChecker(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         
-        symptom = tracker.get_slot("symptom")
+        symptoms = tracker.get_slot("symptom")
         
-        advice = {
-            "fever": "बुखार में आराम करें, तरल पदार्थ पिएं। 102°F से ज्यादा हो तो डॉक्टर से मिलें।",
-            "cough": "खांसी में गर्म पानी पिएं, भाप लें। 2 सप्ताह से ज्यादा हो तो जांच कराएं।",
-            "headache": "सिरदर्द में आराम करें, पानी पिएं।"
-        }.get(symptom, "कृपया अपने लक्षण स्पष्ट रूप से बताएं।")
+        if symptoms:
+            # Send to Gemini for detailed analysis
+            response = self.analyze_symptoms_with_gemini(symptoms)
+            dispatcher.utter_message(text=response)
+        else:
+            dispatcher.utter_message(text="कृपया अपने लक्षण बताएं / Please describe your symptoms")
         
-        dispatcher.utter_message(text=advice)
+        return []
+
+    def analyze_symptoms_with_gemini(self, symptoms):
+        # This would integrate with your Gemini service
+        return f"आपके लक्षण '{symptoms}' के आधार पर सुझाव दिया जा रहा है..."
+
+class ActionFindHospital(Action):
+    def name(self) -> Text:
+        return "action_find_nearby_hospital"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        location = tracker.get_slot("user_location")
+        
+        if location:
+            response = f"आपके क्षेत्र {location} में निकटतम अस्पताल खोजे जा रहे हैं..."
+        else:
+            response = "कृपया अपना स्थान बताएं / Please provide your location"
+        
+        dispatcher.utter_message(text=response)
+        return []
+
+class ActionVaccinationReminder(Action):
+    def name(self) -> Text:
+        return "action_vaccination_reminder"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        response = """
+टीकाकरण अनुस्मारक:
+- कोविड बूस्टर: हर 6 महीने
+- फ्लू वैक्सीन: वार्षिक
+- हेपेटाइटिस बी: जीवनभर सुरक्षा
+
+Vaccination Reminder:
+- COVID Booster: Every 6 months  
+- Flu Vaccine: Annual
+- Hepatitis B: Lifetime protection
+        """
+        
+        dispatcher.utter_message(text=response)
         return []

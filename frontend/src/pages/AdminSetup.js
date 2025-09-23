@@ -19,7 +19,7 @@ const AdminSetup = () => {
 
   const checkAdminExists = async () => {
     try {
-      const response = await fetch('http://localhost:9000/api/admin-setup/check-admin');
+      const response = await fetch('http://localhost:8000/api/admin-setup/check-admin');
       const data = await response.json();
       setAdminExists(data.adminExists);
     } catch (error) {
@@ -40,7 +40,7 @@ const AdminSetup = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:9000/api/admin-setup/create-admin', {
+      const response = await fetch('http://localhost:8000/api/admin-setup/create-admin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

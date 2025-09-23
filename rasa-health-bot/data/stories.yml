@@ -1,0 +1,132 @@
+version: "3.1"
+
+stories:
+
+- story: greet and ask fever
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_fever
+  - action: utter_fever_advice
+
+- story: fever emergency scenario
+  steps:
+  - intent: ask_fever
+    entities:
+    - symptom: "high fever"
+  - action: action_emergency_assessment
+  - action: utter_fever_advice
+
+- story: headache consultation
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_headache
+  - action: utter_headache_advice
+
+- story: severe headache emergency
+  steps:
+  - intent: ask_headache
+    entities:
+    - symptom: "severe headache"
+    - duration: "sudden"
+  - action: action_emergency_assessment
+  - action: utter_consult_doctor
+
+- story: chest pain emergency
+  steps:
+  - intent: ask_chest_pain
+  - action: utter_chest_pain_emergency
+  - action: utter_emergency_numbers
+
+- story: breathing difficulty emergency
+  steps:
+  - intent: ask_breathing_difficulty
+  - action: utter_breathing_difficulty
+  - action: utter_emergency_numbers
+
+- story: cough consultation
+  steps:
+  - intent: ask_cough
+  - action: utter_cough_advice
+
+- story: diabetes management
+  steps:
+  - intent: ask_diabetes
+  - action: utter_diabetes_management
+
+- story: vaccination inquiry
+  steps:
+  - intent: ask_vaccination
+  - action: utter_vaccination_info
+
+- story: emergency help request
+  steps:
+  - intent: ask_emergency
+  - action: utter_emergency_numbers
+  - action: utter_chest_pain_emergency
+
+- story: medication safety
+  steps:
+  - intent: ask_medication
+  - action: utter_medication_safety
+
+- story: mental health support
+  steps:
+  - intent: ask_mental_health
+  - action: utter_mental_health_support
+
+- story: symptom checker flow
+  steps:
+  - intent: symptom_checker
+  - action: utter_ask_symptoms
+  - action: action_symptom_checker
+
+- story: health tips request
+  steps:
+  - intent: health_tips
+  - action: action_provide_health_tips
+
+- story: bot challenge
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+
+- story: goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: comprehensive health consultation
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_fever
+  - action: utter_fever_advice
+  - intent: ask_medication
+  - action: utter_medication_safety
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: emergency detection flow
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: ask_chest_pain
+  - action: utter_chest_pain_emergency
+  - intent: ask_emergency
+  - action: utter_emergency_numbers
+
+- story: diabetes and diet consultation
+  steps:
+  - intent: ask_diabetes
+  - action: utter_diabetes_management
+  - intent: ask_diet
+  - action: action_provide_health_tips
+
+- story: mental health crisis
+  steps:
+  - intent: ask_mental_health
+  - action: utter_mental_health_support
+  - intent: ask_emergency
+  - action: utter_emergency_numbers

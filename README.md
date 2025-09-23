@@ -1,12 +1,12 @@
-# 🩺 AI-Driven Public Health Chatbot
+# 🩺 YOGIC.ai - AI-Driven Public Health Chatbot
 
 **Smart India Hackathon 2024 Project**
 
-An intelligent multilingual health assistant designed for rural healthcare accessibility across India.
+YOGIC.ai - An intelligent multilingual health assistant designed for rural healthcare accessibility across India.
 
 ## 🌟 Features
 
-- 🤖 **AI-Powered Health Assistant** - Google Gemini integration
+- 🤖 **YOGIC.ai Health Assistant** - Google Gemini integration
 - 🌐 **10+ Indian Languages** - Hindi, English, Telugu, Tamil, Bengali, etc.
 - 📱 **Multi-Channel Access** - WhatsApp, SMS, Voice, Web Dashboard
 - 🧠 **Memory & Context** - Remembers previous health conversations
@@ -41,8 +41,8 @@ An intelligent multilingual health assistant designed for rural healthcare acces
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/AI-Health-Chatbot-SIH2024.git
-cd AI-Health-Chatbot-SIH2024
+git clone https://github.com/YOUR_USERNAME/YOGIC.ai-SIH2024.git
+cd YOGIC.ai-SIH2024
 ```
 
 2. **Install Backend Dependencies**
@@ -79,7 +79,7 @@ npm start
 
 # Terminal 3: Start Telegram Bot
 cd backend
-node telegram-bot.js
+node yogic-bot.js
 ```
 
 ## 🎯 Usage
@@ -87,7 +87,7 @@ node telegram-bot.js
 ### Web Interface
 1. Visit `http://localhost:3000`
 2. Register/Login with demo credentials
-3. Start chatting with Dr. AI
+3. Start chatting with YOGIC.ai
 
 ### Telegram Bot
 1. Search `@rural_health_assistant_bot` on Telegram

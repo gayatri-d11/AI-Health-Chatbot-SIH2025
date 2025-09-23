@@ -1,0 +1,325 @@
+version: "3.1"
+
+nlu:
+- intent: greet
+  examples: |
+    - hello
+    - hi
+    - hey
+    - good morning
+    - good evening
+    - namaste
+    - namaskar
+    - hi there
+    - hello yogic
+    - hey yogic.ai
+    - नमस्ते
+    - हैलो
+    - सुप्रभात
+
+- intent: goodbye
+  examples: |
+    - bye
+    - goodbye
+    - see you later
+    - talk to you later
+    - thanks for help
+    - धन्यवाद
+    - अलविदा
+    - फिर मिलेंगे
+
+- intent: bot_challenge
+  examples: |
+    - are you a bot?
+    - are you human?
+    - am I talking to a bot?
+    - am I talking to a human?
+    - what are you?
+    - who are you?
+    - आप कौन हैं?
+    - क्या आप रोबोट हैं?
+
+- intent: ask_fever
+  examples: |
+    - I have fever
+    - I am having fever
+    - my temperature is high
+    - I feel hot
+    - fever since 2 days
+    - running temperature
+    - body temperature is 102
+    - मुझे बुखार है
+    - बुखार आ रहा है
+    - तेज बुखार है
+    - 103 डिग्री बुखार
+    - fever with headache
+    - high fever and chills
+    - fever not coming down
+    - fever for 3 days
+
+- intent: ask_headache
+  examples: |
+    - I have headache
+    - my head is paining
+    - severe headache
+    - migraine pain
+    - head hurts
+    - सिर दर्द हो रहा है
+    - सिर में दर्द
+    - तेज सिरदर्द
+    - माइग्रेन का दर्द
+    - headache since morning
+    - throbbing headache
+    - tension headache
+    - cluster headache
+
+- intent: ask_cough
+  examples: |
+    - I have cough
+    - continuous coughing
+    - dry cough
+    - wet cough
+    - cough with phlegm
+    - खांसी आ रही है
+    - सूखी खांसी
+    - कफ वाली खांसी
+    - रात में खांसी
+    - persistent cough
+    - whooping cough
+    - cough for weeks
+    - blood in cough
+
+- intent: ask_cold
+  examples: |
+    - I have cold
+    - runny nose
+    - blocked nose
+    - nasal congestion
+    - sneezing
+    - सर्दी जुकाम
+    - नाक बंद है
+    - छींक आ रही है
+    - नाक से पानी
+    - stuffy nose
+    - sinus congestion
+    - allergic rhinitis
+
+- intent: ask_stomach_pain
+  examples: |
+    - stomach pain
+    - abdominal pain
+    - belly hurts
+    - stomach ache
+    - gastric problem
+    - पेट में दर्द
+    - पेट दुख रहा है
+    - गैस की समस्या
+    - एसिडिटी
+    - cramps in stomach
+    - burning sensation
+    - nausea and vomiting
+    - loose motions
+
+- intent: ask_chest_pain
+  examples: |
+    - chest pain
+    - heart pain
+    - chest tightness
+    - pain in chest
+    - chest hurts
+    - छाती में दर्द
+    - दिल में दर्द
+    - सीने में जकड़न
+    - breathing problem with chest pain
+    - sharp chest pain
+    - crushing chest pain
+    - chest pain radiating to arm
+
+- intent: ask_breathing_difficulty
+  examples: |
+    - difficulty breathing
+    - shortness of breath
+    - can't breathe properly
+    - breathlessness
+    - gasping for air
+    - सांस लेने में तकलीफ
+    - सांस फूल रही है
+    - दम घुट रहा है
+    - wheezing sound
+    - rapid breathing
+    - shallow breathing
+    - asthma attack
+
+- intent: ask_diabetes
+  examples: |
+    - diabetes problem
+    - blood sugar high
+    - sugar level
+    - diabetic issues
+    - मधुमेह की समस्या
+    - शुगर बढ़ गई है
+    - डायबिटीज है
+    - frequent urination
+    - excessive thirst
+    - blurred vision
+    - diabetic diet
+
+- intent: ask_blood_pressure
+  examples: |
+    - blood pressure high
+    - BP problem
+    - hypertension
+    - low blood pressure
+    - ब्लड प्रेशर हाई है
+    - बीपी की समस्या
+    - उच्च रक्तचाप
+    - dizziness due to BP
+    - headache due to BP
+    - BP medication
+
+- intent: ask_heart_disease
+  examples: |
+    - heart problem
+    - cardiac issue
+    - heart attack symptoms
+    - chest pain heart
+    - दिल की बीमारी
+    - हार्ट अटैक के लक्षण
+    - कार्डियक समस्या
+    - irregular heartbeat
+    - palpitations
+    - heart racing
+
+- intent: ask_vaccination
+  examples: |
+    - vaccination information
+    - vaccine schedule
+    - COVID vaccine
+    - immunization
+    - टीकाकरण की जानकारी
+    - वैक्सीन कब लगवाएं
+    - कोविड वैक्सीन
+    - booster dose
+    - vaccination center
+    - vaccine side effects
+
+- intent: ask_emergency
+  examples: |
+    - emergency help
+    - urgent medical help
+    - call ambulance
+    - medical emergency
+    - आपातकालीन मदद
+    - एम्बुलेंस बुलाओ
+    - तुरंत डॉक्टर चाहिए
+    - serious condition
+    - life threatening
+    - unconscious patient
+    - accident happened
+
+- intent: ask_medication
+  examples: |
+    - medicine information
+    - drug dosage
+    - medication side effects
+    - safe medicines
+    - दवा की जानकारी
+    - दवा कितनी लें
+    - साइड इफेक्ट्स
+    - paracetamol dosage
+    - antibiotic course
+    - over the counter medicines
+
+- intent: ask_diet
+  examples: |
+    - healthy diet
+    - nutrition advice
+    - what to eat
+    - food recommendations
+    - स्वस्थ आहार
+    - क्या खाना चाहिए
+    - पोषण की सलाह
+    - diabetic diet
+    - weight loss diet
+    - balanced nutrition
+
+- intent: ask_exercise
+  examples: |
+    - exercise routine
+    - physical activity
+    - workout plan
+    - fitness advice
+    - व्यायाम की सलाह
+    - कसरत कैसे करें
+    - फिटनेस टिप्स
+    - yoga benefits
+    - walking benefits
+    - home exercises
+
+- intent: ask_mental_health
+  examples: |
+    - mental health
+    - depression symptoms
+    - anxiety problem
+    - stress management
+    - मानसिक स्वास्थ्य
+    - डिप्रेशन के लक्षण
+    - तनाव की समस्या
+    - feeling sad
+    - panic attacks
+    - sleep problems
+
+- intent: ask_pregnancy
+  examples: |
+    - pregnancy care
+    - prenatal advice
+    - pregnancy symptoms
+    - गर्भावस्था की देखभाल
+    - प्रेगनेंसी में सावधानी
+    - morning sickness
+    - pregnancy diet
+    - delivery preparation
+
+- intent: ask_child_health
+  examples: |
+    - child health
+    - baby care
+    - pediatric advice
+    - बच्चों का स्वास्थ्य
+    - बच्चे की देखभाल
+    - vaccination for children
+    - child nutrition
+    - growth milestones
+
+- intent: ask_elderly_care
+  examples: |
+    - elderly care
+    - senior citizen health
+    - old age problems
+    - बुजुर्गों की देखभाल
+    - बुढ़ापे की समस्याएं
+    - arthritis pain
+    - memory problems
+    - mobility issues
+
+- intent: symptom_checker
+  examples: |
+    - check my symptoms
+    - what's wrong with me
+    - diagnose my condition
+    - मेरे लक्षणों की जांच करें
+    - क्या बीमारी है
+    - symptom analysis
+    - health assessment
+    - medical checkup
+
+- intent: health_tips
+  examples: |
+    - health tips
+    - wellness advice
+    - preventive care
+    - स्वास्थ्य सुझाव
+    - सेहत के नुस्खे
+    - healthy lifestyle
+    - immunity boosting
+    - disease prevention
