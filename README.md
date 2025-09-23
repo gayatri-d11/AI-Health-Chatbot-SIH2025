@@ -1,6 +1,6 @@
 # 🩺 YOGIC.ai - AI-Driven Public Health Chatbot
 
-**Smart India Hackathon 2024 Project**
+**Smart India Hackathon 2025 Project**
 
 YOGIC.ai - An intelligent multilingual health assistant designed for rural healthcare accessibility across India.
 
@@ -116,7 +116,7 @@ node yogic-bot.js
 - **Members:** [Team Member Names]
 - **Institution:** [Your College/Institution]
 
-## 🏆 SIH 2024
+## 🏆 SIH 2025
 
 This project addresses the challenge of healthcare accessibility in rural India through AI-driven multilingual health assistance.
 
